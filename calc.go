@@ -37,51 +37,38 @@ func convertFromRoman(a string) (int, error) {
 }
 
 func convertToRoman(a int) (string, error) {
-	switch a {
-	case 1:
-		return "I", nil
-	case 2:
-		return "II", nil
-	case 3:
-		return "III", nil
-	case 4:
-		return "IV", nil
-	case 5:
-		return "V", nil
-	case 6:
-		return "VI", nil
-	case 7:
-		return "VII", nil
-	case 8:
-		return "VIII", nil
-	case 9:
-		return "IX", nil
-	case 10:
-		return "X", nil
-	case 11:
-		return "XI", nil
-	case 12:
-		return "XII", nil
-	case 13:
-		return "XIII", nil
-	case 14:
-		return "XIV", nil
-	case 15:
-		return "XV", nil
-	case 16:
-		return "XVI", nil
-	case 17:
-		return "XVII", nil
-	case 18:
-		return "XVIII", nil
-	case 19:
-		return "XIX", nil
-	case 20:
-		return "XX", nil
-	default:
+
+	if a > 3999 {
 		return "", errors.New("Некорректное арабское число")
 	}
 
+	conversions := []struct {
+		value     int
+		character string
+	}{
+		{1000, "M"},
+		{900, "CM"},
+		{500, "D"},
+		{400, "CD"},
+		{100, "C"},
+		{90, "XC"},
+		{50, "L"},
+		{40, "XL"},
+		{10, "X"},
+		{9, "IX"},
+		{5, "V"},
+		{4, "IV"},
+		{1, "I"},
+	}
+
+	var roman strings.Builder
+	for _, conversion := range conversions {
+		for a >= conversion.value {
+			roman.WriteString(conversion.character)
+			a -= conversion.value
+		}
+	}
+	return roman.String(), nil
 }
 
 func getNumbers(a, b string) (int, int, bool, error) {
@@ -133,7 +120,7 @@ func getAnswer(a, b int, o string, isRoman bool) (string, error) {
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("tessst")
+
 	s, _ := reader.ReadString('\n')
 	s = strings.Trim(s, "\n")
 	c := strings.Split(s, " ")
